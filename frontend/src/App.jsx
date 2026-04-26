@@ -22,6 +22,7 @@ function App() {
   const [accountOpen, setAccountOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+  const [feedError, setFeedError] = useState('');
   const loadMoreRef = useRef(null);
   const loadingRef = useRef(false);
 
@@ -50,11 +51,14 @@ function App() {
     loadingRef.current = true;
     setLoading(true);
     try {
+      setFeedError('');
       const start = reset ? 0 : cursor;
       const params = new URLSearchParams({ cursor: String(start), limit: '24', category, segment, q: activeQuery });
       const data = await api(`/products?${params.toString()}`);
       setProducts((prev) => reset ? data.items : [...prev, ...data.items]);
       setCursor(data.nextCursor || start + 24);
+    } catch (err) {
+      setFeedError(err.message || 'Could not load products right now.');
     } finally {
       setLoading(false);
       loadingRef.current = false;
@@ -165,6 +169,7 @@ function App() {
             }} />
           ))}
         </section>
+        {feedError && <p className="notice">{feedError}</p>}
         <div ref={loadMoreRef} className="loader">{loading ? 'Loading more styles…' : 'Scroll for more'}</div>
       </main>
 
