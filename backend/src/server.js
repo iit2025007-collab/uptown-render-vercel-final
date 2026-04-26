@@ -14,8 +14,25 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
 
+function normalizeOrigin(value = '') {
+  return String(value).trim().replace(/\/+$/, '');
+}
+
+const allowedOrigins = new Set([
+  normalizeOrigin(clientUrl),
+  'http://localhost:5173',
+  'http://127.0.0.1:5173'
+]);
+
 app.use(express.json({ limit: '12mb' }));
-app.use(cors({ origin: [clientUrl, 'http://localhost:5173', 'http://127.0.0.1:5173'], credentials: true }));
+app.use(cors({
+  credentials: true,
+  origin(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.has(normalizeOrigin(origin))) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  }
+}));
 
 function cleanUser(user) {
   if (!user) return null;
