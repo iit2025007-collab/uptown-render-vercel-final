@@ -459,6 +459,7 @@ function CheckoutPage({ items, setItems, user, setPage }) {
   const [message, setMessage] = useState('');
   const [couponCode, setCouponCode] = useState('');
   const [discountPct, setDiscountPct] = useState(0);
+  const [busy, setBusy] = useState(false);
 
   const subtotal = items.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 1), 0);
   const discountAmount = Math.floor(subtotal * discountPct);
@@ -480,35 +481,59 @@ function CheckoutPage({ items, setItems, user, setPage }) {
     setMessage('');
     if (!items.length) return setMessage('Your bag is empty.');
     if (!address.name || !address.phone || !address.line1 || !address.city || !address.pincode) return setMessage('Please fill delivery details.');
-    const created = await api('/payments/create-order', { method: 'POST', body: JSON.stringify({ address, coupon: discountPct > 0 ? couponCode : '' }) });
+    
+    setBusy(true);
+    setMessage('Connecting to secure payment gateway...');
+    try {
+      const created = await api('/payments/create-order', { method: 'POST', body: JSON.stringify({ address, coupon: discountPct > 0 ? couponCode : '' }) });
 
-    if (created.demo || !keyId) {
-      const data = await api('/payments/verify', { method: 'POST', body: JSON.stringify({ demo: true, paymentId: created.order.id, address }) });
-      setItems([]);
-      setMessage(`Order placed: ${data.order.id}. Redirecting...`);
-      setTimeout(() => setPage('feed'), 2000);
-      return;
-    }
-
-    const loaded = await loadRazorpay();
-    if (!loaded) return setMessage('Razorpay could not load. Check internet connection.');
-    const options = {
-      key: keyId,
-      amount: created.order.amount,
-      currency: created.order.currency,
-      name: 'Uptown',
-      description: 'Fashion order payment',
-      order_id: created.order.id,
-      prefill: { name: user?.name, email: user?.email, contact: address.phone },
-      handler: async function (response) {
-        const data = await api('/payments/verify', { method: 'POST', body: JSON.stringify({ ...response, address }) });
+      if (created.demo || !keyId) {
+        const data = await api('/payments/verify', { method: 'POST', body: JSON.stringify({ demo: true, paymentId: created.order.id, address }) });
         setItems([]);
         setMessage(`Order placed: ${data.order.id}. Redirecting...`);
         setTimeout(() => setPage('feed'), 2000);
-      },
-      theme: { color: '#2b1d18' }
-    };
-    new window.Razorpay(options).open();
+        return;
+      }
+
+      const loaded = await loadRazorpay();
+      if (!loaded) {
+        setBusy(false);
+        return setMessage('Razorpay could not load. Check internet connection.');
+      }
+      
+      const options = {
+        key: keyId,
+        amount: created.order.amount,
+        currency: created.order.currency,
+        name: 'Uptown',
+        description: 'Fashion order payment',
+        order_id: created.order.id,
+        prefill: { name: user?.name, email: user?.email, contact: address.phone },
+        handler: async function (response) {
+          setMessage('Verifying payment...');
+          const data = await api('/payments/verify', { method: 'POST', body: JSON.stringify({ ...response, address }) });
+          setItems([]);
+          setMessage(`Payment successful! Order: ${data.order.id}. Redirecting...`);
+          setTimeout(() => setPage('feed'), 2000);
+        },
+        modal: {
+          ondismiss: function() {
+            setBusy(false);
+            setMessage('Payment cancelled.');
+          }
+        },
+        theme: { color: '#2b1d18' }
+      };
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (response){
+        setBusy(false);
+        setMessage('Payment failed: ' + response.error.description);
+      });
+      rzp.open();
+    } catch (err) {
+      setBusy(false);
+      setMessage('Error starting checkout. Please try again.');
+    }
   }
 
   function applyCoupon() {
@@ -555,8 +580,10 @@ function CheckoutPage({ items, setItems, user, setPage }) {
           {discountPct > 0 && <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', color: 'green' }}><span>Discount (20%)</span><span>-{money(discountAmount)}</span></div>}
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #ddd', fontSize: '1.2em', fontWeight: 'bold' }}><span>Total</span><span>{money(total)}</span></div>
           
-          <button className="primary full" onClick={checkout} style={{ marginTop: '30px', padding: '15px', fontSize: '1.1em' }}>Pay Securely</button>
-          {message && <p className="notice" style={{ marginTop: '15px', color: message.includes('Order placed') ? 'green' : 'red' }}>{message}</p>}
+          <button className="primary full" onClick={checkout} disabled={busy} style={{ marginTop: '30px', padding: '15px', fontSize: '1.1em', opacity: busy ? 0.7 : 1 }}>
+            {busy ? 'Processing...' : 'Pay Securely'}
+          </button>
+          {message && <p className="notice" style={{ marginTop: '15px', color: message.includes('successful') || message.includes('placed') || message.includes('applied') ? 'green' : (message.includes('Connecting') ? 'blue' : 'red') }}>{message}</p>}
         </div>
       </div>
     </main>
