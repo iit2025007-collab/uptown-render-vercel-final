@@ -55,7 +55,7 @@ function cleanUser(user) {
 }
 
 function otpCode() {
-  return '123456';
+  return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
 function normalizeEmail(email = '') {
@@ -114,14 +114,16 @@ app.post('/api/auth/start', async (req, res) => {
         authProvider: 'email',
         emailVerified: false
       });
+      const emailResult = await createAndSendOtp(email);
+      return res.json({ message: emailResult.sent ? 'OTP sent to your email.' : 'OTP created. Check the backend terminal in local test mode.', email });
     } else {
       if (!user || !user.passwordHash) return res.status(404).json({ message: 'No account found. Please sign up first.' });
       const okPassword = await bcrypt.compare(password, user.passwordHash);
       if (!okPassword) return res.status(401).json({ message: 'Incorrect password.' });
+      
+      user = await updateOne('users', { email }, { lastLoginAt: new Date().toISOString() }, { upsert: false });
+      return res.json({ token: makeToken(user), user: cleanUser(user) });
     }
-
-    const emailResult = await createAndSendOtp(email);
-    res.json({ message: emailResult.sent ? 'OTP sent to your email.' : 'OTP created. Check the backend terminal in local test mode.', email });
   } catch (err) {
     console.error('auth start error', err);
     res.status(500).json({ message: 'Could not send OTP. Check backend mail settings.' });

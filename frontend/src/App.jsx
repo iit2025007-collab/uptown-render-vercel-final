@@ -217,8 +217,12 @@ function AuthModal({ mode, setMode, onClose, onDone }) {
     setMessage('');
     try {
       const data = await api('/auth/start', { method: 'POST', body: JSON.stringify({ ...form, mode }) });
-      setMessage(data.message || 'Check your email for the code.');
-      setStep('otp');
+      if (data.token) {
+        onDone(data);
+      } else {
+        setMessage(data.message || 'Check your email for the code.');
+        setStep('otp');
+      }
     } catch (err) {
       setMessage(err.message);
     } finally {
