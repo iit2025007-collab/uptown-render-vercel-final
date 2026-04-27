@@ -18,18 +18,32 @@ function normalizeOrigin(value = '') {
   return String(value).trim().replace(/\/+$/, '');
 }
 
+function splitOrigins(value = '') {
+  return String(value)
+    .split(',')
+    .map((item) => normalizeOrigin(item))
+    .filter(Boolean);
+}
+
 const allowedOrigins = new Set([
-  normalizeOrigin(clientUrl),
+  ...splitOrigins(clientUrl),
+  ...splitOrigins(process.env.CLIENT_URLS || ''),
   'http://localhost:5173',
   'http://127.0.0.1:5173'
 ]);
+
+function isVercelOrigin(origin) {
+  return /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
+}
 
 app.use(express.json({ limit: '12mb' }));
 app.use(cors({
   credentials: true,
   origin(origin, callback) {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.has(normalizeOrigin(origin))) return callback(null, true);
+    const normalizedOrigin = normalizeOrigin(origin);
+    if (allowedOrigins.has(normalizedOrigin)) return callback(null, true);
+    if (process.env.ALLOW_VERCEL_PREVIEWS !== 'false' && isVercelOrigin(normalizedOrigin)) return callback(null, true);
     return callback(new Error('Not allowed by CORS'));
   }
 }));

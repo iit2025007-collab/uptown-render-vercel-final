@@ -140,10 +140,19 @@ function App() {
               <button className="ghost" onClick={() => { setCategory('Clothing'); setSegment('Dresses'); }}>See dresses</button>
             </div>
           </div>
-          <div className="heroCards">
-            <img src="https://loremflickr.com/900/1200/fashion,streetwear?lock=551" alt="Fashion editorial" />
-            <img src="https://loremflickr.com/900/1200/sneakers,fashion?lock=552" alt="Sneakers" />
-            <div className="floatingCard"><strong>3-6 day delivery</strong><span>Returns and size exchanges available</span></div>
+          <div className="marqueeContainer">
+            <div className="marqueeContent">
+              <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=900&auto=format&fit=crop" alt="Fashion editorial" />
+              <img src="https://images.unsplash.com/photo-1550614000-4b95d4666008?q=80&w=900&auto=format&fit=crop" alt="Sneakers" />
+              <img src="https://images.unsplash.com/photo-1434389670869-c4176c7576ce?q=80&w=900&auto=format&fit=crop" alt="Clothes on rack" />
+              <img src="https://images.unsplash.com/photo-1574634534894-89d7576c8259?q=80&w=900&auto=format&fit=crop" alt="Fashion model" />
+              <img src="https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?q=80&w=900&auto=format&fit=crop" alt="Clothes" />
+              <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=900&auto=format&fit=crop" alt="Fashion editorial" />
+              <img src="https://images.unsplash.com/photo-1550614000-4b95d4666008?q=80&w=900&auto=format&fit=crop" alt="Sneakers" />
+              <img src="https://images.unsplash.com/photo-1434389670869-c4176c7576ce?q=80&w=900&auto=format&fit=crop" alt="Clothes on rack" />
+              <img src="https://images.unsplash.com/photo-1574634534894-89d7576c8259?q=80&w=900&auto=format&fit=crop" alt="Fashion model" />
+              <img src="https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?q=80&w=900&auto=format&fit=crop" alt="Clothes" />
+            </div>
           </div>
         </section>
 

@@ -16,6 +16,10 @@ services:
         value: 4000
       - key: CLIENT_URL
         sync: false
+      - key: CLIENT_URLS
+        sync: false
+      - key: ALLOW_VERCEL_PREVIEWS
+        value: "true"
       - key: JWT_SECRET
         generateValue: true
       - key: REQUIRE_EMAIL_OTP

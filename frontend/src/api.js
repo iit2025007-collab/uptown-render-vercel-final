@@ -1,4 +1,6 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const rawApiUrl = String(import.meta.env.VITE_API_URL || '').trim();
+const runningOnLocalhost = typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const API_URL = rawApiUrl || (runningOnLocalhost ? 'http://localhost:4000/api' : '');
 
 export function getToken() {
   return localStorage.getItem('uptown_token') || '';
@@ -10,6 +12,9 @@ export function setToken(token) {
 }
 
 export async function api(path, options = {}) {
+  if (!API_URL) {
+    throw new Error('API is not configured. Set VITE_API_URL to your backend URL ending with /api.');
+  }
   const headers = { ...(options.headers || {}) };
   const token = getToken();
   const hasBody = options.body !== undefined && options.body !== null;
