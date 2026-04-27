@@ -199,10 +199,45 @@ app.get('/api/products', async (req, res) => {
   res.json(data);
 });
 
+const fakeNames = ['Sarah M.', 'David K.', 'Emily R.', 'Michael T.', 'Jessica L.', 'James C.', 'Amanda H.', 'Robert B.', 'Jennifer W.', 'William P.'];
+const fakeComments = [
+  'Fits perfectly, wore it to a party!',
+  'The material is so soft and comfortable. Highly recommend.',
+  'Looks exactly like the picture. Very happy with this purchase.',
+  'Great quality for the price. I will definitely buy more.',
+  'Fast shipping and great customer service. The fit is true to size.',
+  'Love the design! It is my new favorite piece.',
+  'Good product, slightly tighter than expected but still nice.',
+  'Absolutely gorgeous. Received many compliments!',
+  'Such a steal! The fabric feels premium.',
+  'Very stylish and versatile. Can dress it up or down.'
+];
+
+function generateFakeReviews(productId) {
+  const seed = productId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const numReviews = 3 + (seed % 4);
+  const reviews = [];
+  for (let i = 0; i < numReviews; i++) {
+    const s = seed + i * 17;
+    reviews.push({
+      id: `fake-review-${productId}-${i}`,
+      productKey: productId,
+      rating: 4 + (s % 2),
+      title: s % 3 === 0 ? 'Loved it' : s % 3 === 1 ? 'Great quality' : 'Perfect fit',
+      text: fakeComments[s % fakeComments.length],
+      userName: fakeNames[s % fakeNames.length],
+      createdAt: new Date(Date.now() - (s % 100) * 86400000).toISOString()
+    });
+  }
+  return reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
 app.get('/api/products/:id', async (req, res) => {
   const product = getProductById(req.params.id);
-  const reviews = await findMany('reviews', { productKey: product.baseKey }, { sort: { createdAt: -1 }, limit: 30 });
-  res.json({ product, related: relatedProducts(product, 12), reviews });
+  const realReviews = await findMany('reviews', { productKey: product.baseKey }, { sort: { createdAt: -1 }, limit: 30 });
+  const fakeReviews = generateFakeReviews(req.params.id);
+  const allReviews = [...realReviews, ...fakeReviews].slice(0, 30);
+  res.json({ product, related: relatedProducts(product, 12), reviews: allReviews });
 });
 
 app.post('/api/history/search', authRequired, async (req, res) => {
@@ -306,7 +341,12 @@ app.post('/api/payments/create-order', authRequired, async (req, res) => {
     const cart = await findOne('carts', { userId: req.user.id });
     const items = cart?.items || [];
     if (!items.length) return res.status(400).json({ message: 'Your bag is empty.' });
-    const amount = Math.max(cartTotal(items), 1);
+    let amount = Math.max(cartTotal(items), 1);
+    
+    if (String(req.body.coupon || '').toUpperCase() === 'WELCOME20') {
+      amount = Math.max(Math.floor(amount * 0.8), 1);
+    }
+
     if (!razorpayReady()) {
       const payment = await insertOne('payments', {
         id: newId('pay'),

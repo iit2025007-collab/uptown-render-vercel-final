@@ -38,9 +38,26 @@ const baseCatalog = [
   { category: 'Beauty', segment: 'Nails', title: 'Gloss Gel Nail Paint', brand: 'Color Desk', query: 'nail,polish,beauty', price: 299, mrp: 499, fit: 'High shine gel finish', fabric: 'Gel polish', sizes: ['9 ml'], colors: [['Cherry','#b91f36'], ['Nude','#c78f7d'], ['Plum','#69304f']] }
 ];
 
+const reliableClothesImages = [
+  'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
+  'https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg',
+  'https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg',
+  'https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_.jpg',
+  'https://fakestoreapi.com/img/71pWzhdJNwL._AC_UL640_QL65_ML3_.jpg',
+  'https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg',
+  'https://fakestoreapi.com/img/71YAIFU48IL._AC_UL640_QL65_ML3_.jpg',
+  'https://fakestoreapi.com/img/51UDEzMJVpL._AC_UL640_QL65_ML3_.jpg',
+  'https://fakestoreapi.com/img/51Y5NI-I5jL._AC_UX679_.jpg',
+  'https://fakestoreapi.com/img/81XH0e8fefL._AC_UY879_.jpg',
+  'https://fakestoreapi.com/img/71HblAHs5xL._AC_UY879_-2.jpg',
+  'https://fakestoreapi.com/img/71z3kpMAYsL._AC_UY879_.jpg',
+  'https://fakestoreapi.com/img/51eg55uWmdL._AC_UX679_.jpg',
+  'https://fakestoreapi.com/img/61pHAEJ4NML._AC_UX679_.jpg'
+];
+
 function imageUrl(product, colorName, index, angle = 0) {
   const seed = (index * 7) + angle;
-  return `https://picsum.photos/seed/${seed + 500}/400/600`;
+  return reliableClothesImages[seed % reliableClothesImages.length];
 }
 
 function shippingFor(category) {
@@ -154,7 +171,7 @@ function generateDynamicProduct(index, query) {
   const colorPack = [{
     name: 'Featured',
     hex: '#333333',
-    images: [0, 1, 2, 3].map((angle) => `https://picsum.photos/seed/${seed + angle + 1000}/400/600`)
+    images: [0, 1, 2, 3].map((angle) => reliableClothesImages[(seed + angle) % reliableClothesImages.length])
   }];
   
   return {
