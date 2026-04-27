@@ -144,16 +144,16 @@ function App() {
           </div>
           <div className="marqueeContainer">
             <div className="marqueeContent">
-              <img src="https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg" alt="Fashion editorial" />
-              <img src="https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg" alt="Sneakers" />
-              <img src="https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg" alt="Clothes on rack" />
-              <img src="https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_.jpg" alt="Fashion model" />
-              <img src="https://fakestoreapi.com/img/71pWzhdJNwL._AC_UL640_QL65_ML3_.jpg" alt="Clothes" />
-              <img src="https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg" alt="Fashion editorial" />
-              <img src="https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg" alt="Sneakers" />
-              <img src="https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg" alt="Clothes on rack" />
-              <img src="https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_.jpg" alt="Fashion model" />
-              <img src="https://fakestoreapi.com/img/71pWzhdJNwL._AC_UL640_QL65_ML3_.jpg" alt="Clothes" />
+              <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=900&auto=format&fit=crop" alt="Fashion editorial" />
+              <img src="https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?q=80&w=900&auto=format&fit=crop" alt="Sneakers" />
+              <img src="https://images.unsplash.com/photo-1574634534894-89d7576c8259?q=80&w=900&auto=format&fit=crop" alt="Clothes on rack" />
+              <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=900&auto=format&fit=crop" alt="Fashion model" />
+              <img src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?q=80&w=900&auto=format&fit=crop" alt="Clothes" />
+              <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=900&auto=format&fit=crop" alt="Fashion editorial" />
+              <img src="https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?q=80&w=900&auto=format&fit=crop" alt="Sneakers" />
+              <img src="https://images.unsplash.com/photo-1574634534894-89d7576c8259?q=80&w=900&auto=format&fit=crop" alt="Clothes on rack" />
+              <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=900&auto=format&fit=crop" alt="Fashion model" />
+              <img src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?q=80&w=900&auto=format&fit=crop" alt="Clothes" />
             </div>
           </div>
         </section>
