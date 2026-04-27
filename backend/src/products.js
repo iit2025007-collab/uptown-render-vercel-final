@@ -123,6 +123,11 @@ export function generateProduct(index, category = 'All') {
 
 export function getProductById(id) {
   const parts = String(id || '').split('_');
+  if (parts[1] === 'dyn') {
+    const query = decodeURIComponent(parts[2] || 'style');
+    const index = Number(parts[3] || 0);
+    return generateDynamicProduct(index, query);
+  }
   const category = parts[1] && parts[1] !== 'all' ? parts[1] : 'All';
   const index = Number(parts[2] || 0);
   return generateProduct(Number.isFinite(index) ? index : 0, category);
@@ -131,14 +136,21 @@ export function getProductById(id) {
 export function listProducts({ cursor = 0, limit = 24, category = 'All', segment = '', q = '' }) {
   const items = [];
   let scan = Number(cursor) || 0;
+  
+  if (q) {
+    while (items.length < limit) {
+      items.push(generateDynamicProduct(scan, q));
+      scan += 1;
+    }
+    return { items, nextCursor: scan, hasMore: true };
+  }
+
   const maxGuard = limit * 30;
   let guard = 0;
   while (items.length < limit && guard < maxGuard) {
     const product = generateProduct(scan, category);
     const matchesSegment = !segment || product.segment.toLowerCase() === segment.toLowerCase();
-    const hay = `${product.title} ${product.brand} ${product.category} ${product.segment}`.toLowerCase();
-    const matchesQ = !q || hay.includes(String(q).toLowerCase());
-    if (matchesSegment && matchesQ) items.push(product);
+    if (matchesSegment) items.push(product);
     scan += 1;
     guard += 1;
   }
@@ -148,4 +160,44 @@ export function listProducts({ cursor = 0, limit = 24, category = 'All', segment
 export function relatedProducts(product, count = 12) {
   const seed = product.baseKey.split('').reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
   return Array.from({ length: count }, (_, i) => generateProduct(seed + i + 1, product.category));
+}
+
+function generateDynamicProduct(index, query) {
+  const seed = index + 1000;
+  const cleanQuery = query.replace(/[^a-zA-Z0-9 ]/g, '').trim();
+  const capitalizedQuery = cleanQuery.charAt(0).toUpperCase() + cleanQuery.slice(1);
+  const colorPack = [{
+    name: 'Featured',
+    hex: '#333333',
+    images: [0, 1, 2, 3].map((angle) => `https://image.pollinations.ai/prompt/${encodeURIComponent(cleanQuery)}%20clothing%20fashion%20model?width=900&height=1200&nologo=true&seed=${seed + angle}`)
+  }];
+  
+  return {
+    id: `p_dyn_${encodeURIComponent(cleanQuery)}_${index}`,
+    slug: cleanQuery.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    baseKey: `uptown-${cleanQuery}`.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    title: `${capitalizedQuery} Edit`,
+    brand: 'Uptown Customs',
+    category: 'Clothing',
+    segment: capitalizedQuery,
+    price: 1299 + ((index % 5) * 100),
+    mrp: 1999 + ((index % 5) * 150),
+    discount: 30,
+    rating: Number((4.2 + ((index % 8) * 0.1)).toFixed(1)),
+    ratingCount: 120 + index,
+    seller: 'Uptown Customs Pvt Ltd',
+    fit: 'Regular fit',
+    fabric: 'Premium Blend',
+    sizes: ['S', 'M', 'L', 'XL'],
+    colors: colorPack,
+    image: colorPack[0].images[0],
+    details: [
+      'Custom generated style',
+      'Material: Premium Blend',
+      'Fit: Regular fit'
+    ],
+    shipping: 'Free delivery in 3-5 days.',
+    terms: 'Easy return and exchange on eligible items.',
+    description: `Exclusive ${cleanQuery} tailored for a fresh, modern look.`
+  };
 }
