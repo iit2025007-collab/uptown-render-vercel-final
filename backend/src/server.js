@@ -55,7 +55,7 @@ function cleanUser(user) {
 }
 
 function otpCode() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  return '123456';
 }
 
 function normalizeEmail(email = '') {

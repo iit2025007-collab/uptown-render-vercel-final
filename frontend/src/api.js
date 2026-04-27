@@ -1,6 +1,6 @@
 const rawApiUrl = String(import.meta.env.VITE_API_URL || '').trim();
 const runningOnLocalhost = typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname);
-const API_URL = rawApiUrl || (runningOnLocalhost ? 'http://localhost:4000/api' : '');
+const API_URL = runningOnLocalhost ? 'http://localhost:4000/api' : (rawApiUrl || 'https://srv-d7n36mfavr4c73fck07g.onrender.com/api');
 
 export function getToken() {
   return localStorage.getItem('uptown_token') || '';
