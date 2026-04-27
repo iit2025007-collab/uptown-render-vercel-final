@@ -142,16 +142,16 @@ function App() {
           </div>
           <div className="marqueeContainer">
             <div className="marqueeContent">
-              <img src="https://image.pollinations.ai/prompt/high%20fashion%20editorial%20model?width=400&height=600&nologo=true&seed=1" alt="Fashion editorial" />
-              <img src="https://image.pollinations.ai/prompt/hypebeast%20sneakers%20streetwear?width=400&height=600&nologo=true&seed=2" alt="Sneakers" />
-              <img src="https://image.pollinations.ai/prompt/boutique%20clothing%20rack%20aesthetic?width=400&height=600&nologo=true&seed=3" alt="Clothes on rack" />
-              <img src="https://image.pollinations.ai/prompt/runway%20fashion%20model%20avant%20garde?width=400&height=600&nologo=true&seed=4" alt="Fashion model" />
-              <img src="https://image.pollinations.ai/prompt/minimalist%20wardrobe%20essentials?width=400&height=600&nologo=true&seed=5" alt="Clothes" />
-              <img src="https://image.pollinations.ai/prompt/high%20fashion%20editorial%20model?width=400&height=600&nologo=true&seed=1" alt="Fashion editorial" />
-              <img src="https://image.pollinations.ai/prompt/hypebeast%20sneakers%20streetwear?width=400&height=600&nologo=true&seed=2" alt="Sneakers" />
-              <img src="https://image.pollinations.ai/prompt/boutique%20clothing%20rack%20aesthetic?width=400&height=600&nologo=true&seed=3" alt="Clothes on rack" />
-              <img src="https://image.pollinations.ai/prompt/runway%20fashion%20model%20avant%20garde?width=400&height=600&nologo=true&seed=4" alt="Fashion model" />
-              <img src="https://image.pollinations.ai/prompt/minimalist%20wardrobe%20essentials?width=400&height=600&nologo=true&seed=5" alt="Clothes" />
+              <img src="https://picsum.photos/seed/fashion1/400/600" alt="Fashion editorial" />
+              <img src="https://picsum.photos/seed/fashion2/400/600" alt="Sneakers" />
+              <img src="https://picsum.photos/seed/fashion3/400/600" alt="Clothes on rack" />
+              <img src="https://picsum.photos/seed/fashion4/400/600" alt="Fashion model" />
+              <img src="https://picsum.photos/seed/fashion5/400/600" alt="Clothes" />
+              <img src="https://picsum.photos/seed/fashion1/400/600" alt="Fashion editorial" />
+              <img src="https://picsum.photos/seed/fashion2/400/600" alt="Sneakers" />
+              <img src="https://picsum.photos/seed/fashion3/400/600" alt="Clothes on rack" />
+              <img src="https://picsum.photos/seed/fashion4/400/600" alt="Fashion model" />
+              <img src="https://picsum.photos/seed/fashion5/400/600" alt="Clothes" />
             </div>
           </div>
         </section>

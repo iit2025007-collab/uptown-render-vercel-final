@@ -40,8 +40,7 @@ const baseCatalog = [
 
 function imageUrl(product, colorName, index, angle = 0) {
   const seed = (index * 7) + angle;
-  const query = `${product.title} fashion model`;
-  return `https://image.pollinations.ai/prompt/${encodeURIComponent(query)}?width=400&height=600&nologo=true&seed=${seed}`;
+  return `https://picsum.photos/seed/${seed + 500}/400/600`;
 }
 
 function shippingFor(category) {
@@ -155,7 +154,7 @@ function generateDynamicProduct(index, query) {
   const colorPack = [{
     name: 'Featured',
     hex: '#333333',
-    images: [0, 1, 2, 3].map((angle) => `https://image.pollinations.ai/prompt/${encodeURIComponent(cleanQuery)}%20fashion%20model?width=400&height=600&nologo=true&seed=${seed + angle}`)
+    images: [0, 1, 2, 3].map((angle) => `https://picsum.photos/seed/${seed + angle + 1000}/400/600`)
   }];
   
   return {
